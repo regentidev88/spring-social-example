@@ -3,10 +3,11 @@ package com.cezarg.regentidev88.security.authFilters.facebook;
 import com.cezarg.regentidev88.exception.InvalidTokenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FacebookAuthProvider implements AuthenticationProvider {
 
     @Autowired
@@ -18,7 +19,7 @@ public class FacebookAuthProvider implements AuthenticationProvider {
 
         String username = authenticationService.verifyToken(auth.getCredentials());
         if (username == null) {
-            throw new InvalidTokenException( "Invalid Token");
+            throw new InvalidTokenException("Invalid Token");
         }
 
         auth.setAuthenticated(true);
@@ -28,7 +29,6 @@ public class FacebookAuthProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return (UsernamePasswordAuthenticationToken.class
-                .isAssignableFrom(authentication));
+        return FacebookAuthToken.class.isAssignableFrom(authentication);
     }
 }

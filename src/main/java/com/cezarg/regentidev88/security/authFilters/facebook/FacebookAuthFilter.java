@@ -1,21 +1,19 @@
 package com.cezarg.regentidev88.security.authFilters.facebook;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class FacebookAuthFilter extends AbstractAuthenticationProcessingFilter {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    public FacebookAuthFilter() {
+    public FacebookAuthFilter(AuthenticationManager authManager) {
         super("/*");
+        setAuthenticationManager(authManager);
     }
 
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -23,6 +21,6 @@ public class FacebookAuthFilter extends AbstractAuthenticationProcessingFilter {
             return null; // no header found, continue on to other security filters
         }
 
-        return new FacebookAuthToken(request.getHeader("Authorization"));
+        return this.getAuthenticationManager().authenticate( new FacebookAuthToken(request.getHeader("Authorization")));
     }
 }

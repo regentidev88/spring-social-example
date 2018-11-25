@@ -19,10 +19,13 @@ public class FacebookAuthenticationService implements AuthenticationService {
     @Override
     public String verifyToken(String token) {
         try {
+            if(token.startsWith("Bearer ")){
+                token = token.substring("Bearer ".length());
+            }
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
             HttpEntity entity = new HttpEntity(headers);
-            String fields = "id,email,first_name,last_name";
+            String fields = "id,name";
             UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString("https://graph.facebook.com/me")
                     .queryParam("access_token", token).queryParam("fields", fields);
 
